@@ -1,0 +1,1 @@
+Cuando se haga click en el rango de una posicion/ficha, se llama a un metodo en donde este toma la posicion de ese rango y a su vez este verifica si hay una ficha alli si la hay entonces el siguiente click actualiza la posicion de la ficha o si ya la ha clickeado antes, toma la posicion del rango del nuevo click.
