@@ -49,7 +49,11 @@ public class Ficha extends JComponent {
 	public void setUso(Boolean ocupado){
 		uso = ocupado;
 	}
-
+	
+	public Color getColor(){
+		return color;
+	}
+	
 	public void paint(Graphics gg){
 		super.paint(gg);
 		if (gg instanceof Graphics2D){

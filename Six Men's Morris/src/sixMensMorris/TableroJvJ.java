@@ -9,11 +9,10 @@ import java.awt.Image;
 
 import javax.swing.*;
 
-public class Tablero extends JFrame {
-	//private MiPanel panel;
+public class TableroJvJ extends JFrame {
 	private Estado[] estado;
-	private Ficha[] jugador;
-	private Ficha[] com;
+	private Ficha[] jugador; //Fichas Negras
+	private Ficha[] com; //Fichas Blancas
 	private JLabel label1;
 	private JLabel label2;
 	private JLabel label3;
@@ -21,11 +20,11 @@ public class Tablero extends JFrame {
 	private JLabel label5;
 	private JTextField disponibleN;
 	private JTextField disponibleB;
-	private boolean turno; //True = Jugador.     False = COM.
+	private boolean turno; //True = Jugador.     False = Jugador 2.
 	private int fplayer, fcom, contJugadas, click = 0, temp, aux, contEB = 0, contEN = 0, fSinJugarB, fSinJugarN;
 	private short[] nX, nY, bX, bY;
 	
-	Tablero(String j1){
+	TableroJvJ(String j1, String j2){
 		super("Six Men's Morris");
 		this.setSize(800, 600);
 		
@@ -44,11 +43,11 @@ public class Tablero extends JFrame {
 		//Inicializacion de Labels y Botones
 		label1 = new JLabel(j1);
 		label1.setFont(new java.awt.Font("Tahoma", 1, 24));
-		label1.setBounds(82, 210, 400, 500);
+		label1.setBounds(80, 209, 200, 500);
 		
-		label2 = new JLabel("COM");
+		label2 = new JLabel(j2);
 		label2.setFont(new java.awt.Font("Tahoma", 1, 24));
-		label2.setBounds(605, 210, 400, 500);
+		label2.setBounds(590, 209, 200, 500);
 		
 		label3 = new JLabel("Turno");
 		label3.setFont(new java.awt.Font("Tahoma", 1, 24));
@@ -162,7 +161,7 @@ public class Tablero extends JFrame {
 		}
 	}
 	
-	//Juego 1 vs COM
+	//Juego 1 VS 1
 	private void jugarSMM(java.awt.event.MouseEvent evt){
 		//Las Primeras 12 jugadas
     	if(fSinJugarN > 0 || fSinJugarB > 0){
@@ -339,7 +338,7 @@ public class Tablero extends JFrame {
         	}//Fin else(truno)
     	}
 	}
-		
+	
 	//Paint
 	private void cuadros(Graphics gg){
 		if (gg instanceof Graphics2D){

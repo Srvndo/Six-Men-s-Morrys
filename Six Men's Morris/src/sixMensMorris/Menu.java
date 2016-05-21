@@ -7,6 +7,8 @@ public class Menu extends JFrame {
 	private JButton jugar;
 	private JButton ayuda;
 	private JButton salir;
+	private JButton acerca;
+	private JRadioButton pvp, pvc;	
 
 	Menu(){
 		
@@ -19,6 +21,18 @@ public class Menu extends JFrame {
 		jugar = new JButton("JUGAR");
 		ayuda = new JButton("Ayuda");
 		salir = new JButton("Salir");
+		acerca = new JButton("Acerca de");
+		
+		pvp = new JRadioButton("JUGADOR VS JUGADOR", true);
+		pvp.setBounds(225, 250, 150, 50);
+		
+		pvc = new JRadioButton("JUGADOR VS COM");
+		pvc.setBounds(225, 290, 150, 50);
+		
+		ButtonGroup group = new ButtonGroup();
+		group.add(pvp);
+		group.add(pvc);
+		
 		
 		sixMens.setFont(new java.awt.Font("Tahoma", 1, 36));
 		sixMens.setBounds(115, 50, 400, 50);
@@ -35,6 +49,10 @@ public class Menu extends JFrame {
 		salir.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		salir.setFont(new java.awt.Font("Tahoma", 1, 18));
 		salir.setBounds(473, 400, 100, 50);
+		
+		acerca.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		acerca.setFont(new java.awt.Font("Tahoma", 1, 18));
+		acerca.setBounds(220, 400, 140, 50);
 		
 		jugar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -54,36 +72,65 @@ public class Menu extends JFrame {
             }
         });
 		
+		acerca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	btnAcerca();
+            }
+        });
+		
 		add(sixMens);
 		add(jugar);
 		add(ayuda);
 		add(salir);
+		add(acerca);
+		add(pvp);
+		add(pvc);
 	}
 
 	public void btnJugar(){
-		Tablero tablero = new Tablero();
-        tablero.setVisible(true);
-        this.setVisible(false);
+		if(pvp.isSelected()){
+			String j1 = JOptionPane.showInputDialog(null, "Jugador 1", JOptionPane.QUESTION_MESSAGE);
+
+			String j2 = JOptionPane.showInputDialog(null, "Jugador 2", JOptionPane.QUESTION_MESSAGE);
+			
+			TableroJvJ tablero2 = new TableroJvJ(j1,j2);
+		    tablero2.setVisible(true);
+		    this.setVisible(false);
+
+		}
+		else if(pvc.isSelected()){
+			String j1 = JOptionPane.showInputDialog(null, "Jugador 1", JOptionPane.QUESTION_MESSAGE);
+			
+			Tablero tablero = new Tablero(j1);
+	        tablero.setVisible(true);
+	        this.setVisible(false);
+		}
 	}
 	
 	public void btnAyuda(){
-		JOptionPane.showMessageDialog(null, "Instructions\n This is a turn-based game for two players. "
-                + "One player plays black, the other white. The goal is to create “mills”\n "
-                + "of three pieces in a row, thereby reducing the opponent’s pieces to two and winning the game.\n "
-                + "1.Start with an empty board. Decide who will go first.\n"
-                + "2.Players take turns placing their pieces on the points around "
-                + "the board. Pieces may be placed anywhere, but no two pieces may share a point.\n"
-                + "3.If a player puts three of their own pieces in an unbroken line (horizontal or vertical), it’s called a mill. "
-                + "For every mill formed, that player may remove one of the opponent’s pieces, starting with unattached pieces that are not currently part of a mill.\n"
-                + "4.Once all the pieces are on the board, players take turns moving their pieces around. Pieces may only move to an adjacent point connected by a line and they can’t jump any pieces. The goal is to keep making mills.\n"
-                + "5.Mills can be broken and reformed by moving a player out of the mill and then back in. Each time, the player may remove an opponent’s piece.\n"
-                + "6.When a player is reduced to two pieces, the game is over, and the other player wins. \n\n");
+		JOptionPane.showMessageDialog(null, "Instructiones.\nEste es un juego basado en turnos para dos jugadores.\n"
+                + "Un Jugador usa el NEGRO, y el otro el BLANCO. El Objetivo del juego es crear molinos\n"
+                + "de 3 piezas seguidas, hasta reducir la cantidad de fichas del oponente a 2 y ganar.\n\n"
+                + "1.Se empieza con la mesa vacia y se decide quien ira primero.\n\n"
+                + "2.Los jugadores colocan sus fichas en los puntos marcados. "
+                + "Las fichas pueden estar en cualquier lugar, pero 2 fichas no pueden compartir el mismo punto.\n\n"
+                + "3.Si un jugador coloca 3 de sus ficha en una línea (Vertical o Horizontal). Esto se denomina un Molino, "
+                + "por cada molino formado, el jugador puede remover una ficha de su oponente.\nEmpezando por cualquier ficha que no pertenezca a un molino.\n\n"
+                + "4.Una vez que todas las fichas estan en la mesa, los jugadores toman turnos para mover sus fichas.\nLas Fichas solo se pueden mover a un punto adyacente conectado por una línea y no se puede saltar ninguna ficha. El Objetivo es Mantener los molinos.\n\n"
+                + "5.Los molinos pueden deshacerce y hacerce otra vez por un moviento del jugador. Cada vez, el Jugador puede eliminar una ficha de su Oponente.\n\n"
+                + "6.Cuando alguno de los Jugadores solo le quedan 2 fichas, el otro Jugador GANA!. \n\n");
+		
+		
 	}
 		
 	public void btnSalir(){
 		System.exit(0);
 	}
 	
+	public void btnAcerca(){
+		JOptionPane.showMessageDialog(null, "Acerca de: \n                     SIX MEN'S MORRIS\nCreado por: Servando Bermúdez C.I: 23.997.749\n"
+				+ "                      Guillermo Lunar C.I: 24.983.503\n\n          Lenguajes de Programación\n            Prof. Aquiles Barreto, PhD.");
+	}
 	
 	public static void main(String[] arg) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
