@@ -9,6 +9,8 @@ import java.awt.Image;
 
 import javax.swing.*;
 
+import org.jpl7.Query;
+import org.jpl7.Query;
 public class Tablero extends JFrame {
 	//private MiPanel panel;
 	private Estado[] estado;
@@ -22,7 +24,8 @@ public class Tablero extends JFrame {
 	private JTextField disponibleN;
 	private JTextField disponibleB;
 	private boolean turno; //True = Jugador.     False = COM.
-	private int fplayer, fcom, contJugadas, click = 0, temp, aux, contEB = 0, contEN = 0, fSinJugarB, fSinJugarN;
+	private int fplayer, fcom, cont3LB, cont3LN, click = 0, temp, aux, contEB = 0, contEN = 0, fSinJugarB, fSinJugarN, click2 = 0;
+	private static int limit = 50;
 	private short[] nX, nY, bX, bY;
 	
 	Tablero(String j1){
@@ -35,7 +38,6 @@ public class Tablero extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
 		//Inicializar Limitantes
-		contJugadas = 0;
 		if(Math.random()*10 > 4.5)
 			turno = true;
 		else
@@ -163,183 +165,711 @@ public class Tablero extends JFrame {
 	}
 	
 	//Juego 1 vs COM
-	private void jugarSMM(java.awt.event.MouseEvent evt){
+	private void jugarSMM(java.awt.event.MouseEvent evt)
+	{
 		//Las Primeras 12 jugadas
-    	if(fSinJugarN > 0 || fSinJugarB > 0){
-    		if(turno){
-        		for(int i = 0; i < 16; i++){
-            		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                  	  if(!estado[i].getOcup()){
-                  		jugador[fplayer].setX(estado[i].getX());
-                  		jugador[fplayer].setY(estado[i].getY());
-                  		jugador[fplayer].setNombre(estado[i].getNombre());
-                  		disponibleN.setText("" + ++fplayer);
-                  		estado[i].setOcup(true);
-                		fSinJugarN--;
-                		contJugadas++;
-                		repaint();
-                  	    System.out.println("Estado " + (i+1) + " Jugador " + contJugadas);
-                  	    break;
-                  	  }
-                    }
-            	}//Fin For
-        		if(contJugadas == 5){ //aqui se va a poner la condicion del 3 en Linea
-        			for(int x = 0; x < 16; x++){
-        				System.out.println("Eliminar Blanca");
-        	    		if((evt.getX() <= estado[x].getX()+30 && evt.getX() >= estado[x].getX()-30) && (evt.getY() <= estado[x].getY()+30 && evt.getY() >= estado[x].getY()-30)){
-        	    			if(estado[x].getOcup()){
-        	    				for(int y = 0; y < fplayer; y++){
-        	    					if(com[y].getNombre().compareTo(estado[x].getNombre()) == 0 && com[y].getColor() == Color.WHITE){
-        	    						com[y].setX(nX[contEB]);
-        	    						com[y].setY(nY[contEB++]);
-        	    						com[y].setUso(false);
-        	    						System.out.println("Estado " + (x+1) + " Jugador " + contJugadas);
-        	    						contJugadas++;
-        	    						estado[x].setOcup(false);
-        	    						disponibleB.setText("" + (fcom-contEB));
-        	    						turno = false;
-        	    	        			repaint();
-        	    						break;
-        	    					}//Fin if comparar nombres
-        	    				}//fin for buscar fichas
-        	          	  }
-        	    		}
-        			}
-        		}
-        		else {
-        			turno = false;
-        			repaint();
-        		}
-        	}// Fin if(turno)
-        	else if(turno == false){
-        		for(int i = 0; i < 16; i++){
-            		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                  	  if(!estado[i].getOcup()){
-                  		com[fcom].setX(estado[i].getX());
-                  		com[fcom].setY(estado[i].getY());
-                  		com[fcom].setNombre(estado[i].getNombre());
-                  		disponibleB.setText("" + ++fcom);
-                  		estado[i].setOcup(true);
-                		contJugadas++;
-                  	    System.out.println("Estado " + (i+1) + " Com " + contJugadas);
-                  	    turno = true;
-                  	    fSinJugarB--;
-                  	    repaint();
-                  	    break;
-                  	  }
-                    }
-            	}//Fin For
-        		if(contJugadas == 11){ //aqui se va a poner la condicion del 3 en Linea
-        			for(int x = 0; x < 16; x++){
-        				System.out.println("Eliminar Negra");
-        	    		if((evt.getX() <= estado[x].getX()+30 && evt.getX() >= estado[x].getX()-30) && (evt.getY() <= estado[x].getY()+30 && evt.getY() >= estado[x].getY()-30)){
-        	    			if(estado[x].getOcup()){
-        	    				for(int y = 0; y < fplayer; y++){
-        	    					if(jugador[y].getNombre().compareTo(estado[x].getNombre()) == 0 && jugador[y].getColor() == Color.BLACK){
-        	    						jugador[y].setX(bX[contEN]);
-        	    						jugador[y].setY(bY[contEN++]);
-        	    						jugador[y].setUso(false);
-        	    						System.out.println("Estado " + (x+1) + " Jugador 2 " + contJugadas);
-        	    						contJugadas++;
-        	    						estado[x].setOcup(false);
-        	    						disponibleB.setText("" + (fplayer-contEN));
-        	    						turno = true;
-        	    	        			repaint();
-        	    						break;
-        	    					}//Fin if comparar nombres
-        	    				}//fin for buscar fichas
-        	          	  }
-        	    		}
-        			}
-        		}
-        		else {
-        			turno = true;
-        			repaint();
-        		}
-        	}//Fin else(turno)
-    	}//Fin If(contJugadas)
-    	//Despues de 12 jugadas (todas las fichas en la mesa).
-    	else if(fSinJugarN == 0 && fSinJugarB == 0){
-    		if(turno){
-        		if(click == 0){
-        			for(int i = 0; i < 16; i++){
-                		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                      	  if(estado[i].getOcup()){
-                      		for(int j = 0; j < fplayer; j++){
-                      			if(jugador[j].getNombre().compareTo(estado[i].getNombre()) == 0){
-                      				temp = j;
-                      				aux = i;
-                      				click++;
-                      				System.out.println(jugador[temp].getNombre());
-                      				System.out.println("Ficha Negra Encontrada");
-                      				break;
-                      			}//Fin if comparar nombres
-                      		}//fin for buscar fichas
-                      	  }//fin if estado ocupado
-                        }//fin if pos
-        			}//fin for
-        		}//fin if(click)
-        		else if(click > 0){
-        			System.out.println(click);
-        			for(int i = 0; i < 16; i++){
-                		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                      	  if(!estado[i].getOcup()){
-                      		jugador[temp].setX(estado[i].getX());
-                      		jugador[temp].setY(estado[i].getY());
-                      		jugador[temp].setNombre(estado[i].getNombre());
+    	if(fplayer < 6 || fcom < 6)
+    	{ 		
+    		if(turno)
+    		{
+    			System.out.println("Cont3lN " + cont3LN);
+        		if(cont3LN == 0)
+        		{
+        			evt.consume();
+        			for(int i = 0; i < 16; i++)
+            		{
+                		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                		{
+                      	  if(!estado[i].getOcup())
+                      	  {
+                      		jugador[fplayer].setX(estado[i].getX());
+                      		jugador[fplayer].setY(estado[i].getY());
+                      		jugador[fplayer].setNombre(estado[i].getNombre());
+                      		jugador[fplayer].setUso(true);
+                      		disponibleN.setText("" + (++fplayer - contEN));
                       		estado[i].setOcup(true);
-                      		estado[aux].setOcup(false);
-                      		repaint();
-                      		click = 0;
-                    		turno = false;
-                    		contJugadas++;
-                    		break;
-                      	  }
-                      	}
-                    }
-        		}
-        	}// Fin if(turno)
-        	else if(turno == false){
-        		if(click == 0){
-        			for(int i = 0; i < 16; i++){
-                		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                      	  if(estado[i].getOcup()){
-                      		for(int j = 0; j < fcom; j++){
-                      			if(com[j].getNombre().compareTo(estado[i].getNombre()) == 0){
-                      				temp = j;
-                      				click++;
-                      				aux = i;
-                      				System.out.println(com[temp].getNombre());
-                      				System.out.println("Ficha Blanca Encontrada");
-                      				break;
-                      			}
-                      		}
+                    		fSinJugarN--;
+                    		repaint();
+                    		
                       	  }
                         }
-        			}
+                	}//Fin For
+            		if(fplayer >= 3)
+            		{
+            			if(tresEnLinea(jugador)) //aqui se va a poner la condicion del 3 en Linea
+                		{ 
+            				evt.consume();
+                			for(int x = 0; x < 16; x++)
+                			{
+                				System.out.println("Eliminar Blanca");
+                	    		if((evt.getX() <= estado[x].getX()+limit && evt.getX() >= estado[x].getX()-limit) && (evt.getY() <= estado[x].getY()+limit && evt.getY() >= estado[x].getY()-limit))
+                	    		{
+                	    			if(estado[x].getOcup())
+                	    			{
+                	    				for(int y = 0; y < fcom; y++)
+                	    				{
+                	    					if(com[y].getNombre().compareTo(estado[x].getNombre()) == 0 && com[y].getColor() == Color.WHITE)
+                	    					{
+                	    						com[y].setX(nX[contEB]);
+                	    						com[y].setY(nY[contEB++]);
+                	    						com[y].setUso(false);
+                	    						estado[x].setOcup(false);
+                	    						disponibleB.setText("" + (fcom-contEB));
+                	    						turno = false;
+                	    						cont3LN++;
+                	    	        			repaint();
+                	    	        			break;
+                	    					}//Fin if comparar nombres
+                	    				}//fin for buscar fichas
+                	          	  }
+                	    		}	
+                			}
+                		}
+            			else
+            			{
+            				turno = false;
+            				repaint();
+            			}
+            		}
+            		else
+            		{
+            			turno = false;
+            			repaint();
+            		}
         		}
-        		else if(click > 0){
-        			for(int i = 0; i < 16; i++){
-                		if((evt.getX() <= estado[i].getX()+30 && evt.getX() >= estado[i].getX()-30) && (evt.getY() <= estado[i].getY()+30 && evt.getY() >= estado[i].getY()-30)){
-                      	  if(!estado[i].getOcup()){
-                      		com[temp].setX(estado[i].getX());
-                      		com[temp].setY(estado[i].getY());
-                      		com[temp].setNombre(estado[i].getNombre());
+        		else
+    			{
+    				if(click == 0)
+            		{
+    					evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fplayer; j++)
+                          		{
+                          			if(jugador[j].getNombre().compareTo(estado[i].getNombre()) == 0 && jugador[j].getColor() == Color.BLACK)
+                          			{
+                          				temp = j;
+                          				aux = i;
+                          				click++;
+                          				System.out.println("Ficha Negra Encontrada");
+                          			}//Fin if comparar nombres
+                          		}//fin for buscar fichas
+                          	  }//fin if estado ocupado
+                            }//fin if pos
+            			}//fin for
+            		}//fin if(click)
+            		else if(click > 0)
+            		{
+            			for(int i = 0; i < 16; i++)
+            			{
+            				evt.consume();
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(jugador[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+                          			jugador[temp].setX(estado[i].getX());
+                              		jugador[temp].setY(estado[i].getY());
+                              		jugador[temp].setNombre(estado[i].getNombre());
+                              		estado[i].setOcup(true);
+                              		estado[aux].setOcup(false);
+                              		click = 0;
+                              		cont3LN = 0;
+                              		turno = false;
+                              		repaint();
+                          		}
+                          	  }
+                          	}
+                        }
+            		}
+    			}
+        	}// Fin if(turno)
+        	else if(!turno)
+        	{
+        		System.out.println("Cont3lB " + cont3LB);
+        		if(cont3LB == 0)
+        		{
+        			evt.consume();
+        			for(int i = 0; i < 16; i++)
+            		{
+                		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                		{
+                      	  if(!estado[i].getOcup())
+                      	  {
+                      		com[fcom].setX(estado[i].getX());
+                      		com[fcom].setY(estado[i].getY());
+                      		com[fcom].setNombre(estado[i].getNombre());
+                      		com[fcom].setUso(true);
+                      		disponibleB.setText("" + (++fcom - contEB));
                       		estado[i].setOcup(true);
-                      		estado[aux].setOcup(false);
-                      		click = 0;
-                      		repaint();
-                      		turno = true;
-                    		contJugadas++;
-                    		break;
+                    		fSinJugarB--;
+                    		repaint();
+                    		
                       	  }
-                      	}
-                    }
+                        }
+                	}//Fin For
+            		if(fSinJugarB < 4)
+            		{
+            			if(tresEnLinea(com)) //aqui se va a poner la condicion del 3 en Linea
+                		{ 
+            				evt.consume();
+                			for(int x = 0; x < 16; x++)
+                			{
+                				System.out.println("Eliminar Negra");
+                	    		if((evt.getX() <= estado[x].getX()+limit && evt.getX() >= estado[x].getX()-limit) && (evt.getY() <= estado[x].getY()+limit && evt.getY() >= estado[x].getY()-limit))
+                	    		{
+                	    			if(estado[x].getOcup())
+                	    			{
+                	    				for(int y = 0; y < fplayer; y++)
+                	    				{
+                	    					if(jugador[y].getNombre().compareTo(estado[x].getNombre()) == 0 && jugador[y].getColor() == Color.BLACK)
+                	    					{
+                	    						jugador[y].setX(bX[contEN]);
+                	    						jugador[y].setY(bY[contEN++]);
+                	    						jugador[y].setUso(false);
+                	    						estado[x].setOcup(false);
+                	    						disponibleN.setText("" + (fplayer-contEN));
+                	    						turno = true;
+                	    						cont3LB++;
+                	    	        			repaint();
+                	    	        			break;
+                	    					}//Fin if comparar nombres
+                	    				}//fin for buscar fichas
+                	          	  }
+                	    		}
+                			}
+                		}
+            			else
+            			{
+            				turno = true;
+            				repaint();
+            			}
+            		}
+            		else
+            		{
+            			turno = true;
+            			repaint();
+            		}
         		}
-        	}//Fin else(truno)
+        		else
+    			{
+    				if(click == 0)
+            		{
+    					evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fcom; j++)
+                          		{
+                          			if(com[j].getNombre().compareTo(estado[i].getNombre()) == 0 && com[j].getColor() == Color.WHITE)
+                          			{
+                          				temp = j;
+                          				aux = i;
+                          				click++;
+                          				System.out.println("Ficha Blanca Encontrada");
+                          			}//Fin if comparar nombres
+                          		}//fin for buscar fichas
+                          	  }//fin if estado ocupado
+                            }//fin if pos
+            			}//fin for
+            		}//fin if(click)
+            		else if(click > 0)
+            		{
+            			for(int i = 0; i < 16; i++)
+            			{
+            				evt.consume();
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(com[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+                          			com[temp].setX(estado[i].getX());
+                              		com[temp].setY(estado[i].getY());
+                              		com[temp].setNombre(estado[i].getNombre());
+                              		estado[i].setOcup(true);
+                              		estado[aux].setOcup(false);
+                              		cont3LB = 0;
+                              		click = 0;
+                              		turno = true;
+                              		repaint();
+                          		}
+                          	  }
+                          	}
+                        }
+            		}
+    			}
+        	}//Fin else(turno)
+    	}//Fin If(fichas disponibles)
+    	
+    	//Todas las fichas en la mesa.
+    	else 
+    	{
+    		if(turno)
+    		{
+    			if(cont3LN == 0)
+    			{
+    				if(click == 0)
+            		{
+            			evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fplayer; j++)
+                          		{
+                          			if(jugador[j].getNombre().compareTo(estado[i].getNombre()) == 0 && jugador[j].getColor() == Color.BLACK)
+                          			{
+                          				temp = j;
+                          				aux = i;
+                          				click++;
+                          				System.out.println(jugador[temp].getNombre());
+                          				System.out.println("Ficha Negra Encontrada");
+                          			}//Fin if comparar nombres
+                          		}//fin for buscar fichas
+                          	  }//fin if estado ocupado
+                            }//fin if pos
+            			}//fin for
+            		}//fin if(click)
+    				else if(click > 0)
+            		{
+            			evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(jugador[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+    	                      		jugador[temp].setX(estado[i].getX());
+    	                      		jugador[temp].setY(estado[i].getY());
+    	                      		jugador[temp].setNombre(estado[i].getNombre());
+    	                      		estado[i].setOcup(true);
+    	                      		estado[aux].setOcup(false);
+    	                      		repaint();
+                          		}
+                          	  }
+                    		}
+            			}
+            			if(tresEnLinea(jugador)) //aqui se va a poner la condicion del 3 en Linea
+                		{ 
+                			for(int x = 0; x < 16; x++)
+                			{
+                				System.out.println("Eliminar Blanca");
+                				//Esperando click
+                	    		if((evt.getX() <= estado[x].getX()+limit && evt.getX() >= estado[x].getX()-limit) && (evt.getY() <= estado[x].getY()+limit && evt.getY() >= estado[x].getY()-limit))
+                	    		{
+                	    			System.out.println("x");
+                	    			if(estado[x].getOcup())
+                	    			{
+                	    				System.out.println("y");
+                	    				for(int y = 0; y < fcom; y++)
+                	    				{
+                	    					if((com[y].getNombre().compareTo(estado[x].getNombre()) == 0) && (com[y].getColor() == Color.WHITE))
+                	    					{
+                	    						System.out.println("z");
+                	    						com[y].setX(nX[contEB]);
+                	    						com[y].setY(nY[contEB++]);
+                	    						com[y].setUso(false);
+                	    						estado[x].setOcup(false);
+                	    						disponibleB.setText("" + (fcom-contEB));
+                	    						cont3LN++;
+                	    						click = 0;
+                	    						turno = false;
+                	    	        			repaint();
+                	    					}//Fin if comparar nombres
+                	    					System.out.println("y2");
+                	    				}//fin for buscar fichas
+                	          	  }
+                	    		}
+                			}
+                		}
+            			else
+            			{
+            				click = 0;
+            				turno = false;
+            				repaint();
+            			}
+            		}
+    			}//Fin cont3LN == 0
+    			else
+    			{
+    				if(click == 0)
+            		{
+    					evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fplayer; j++)
+                          		{
+                          			if(jugador[j].getNombre().compareTo(estado[i].getNombre()) == 0 && jugador[j].getColor() == Color.BLACK)
+                          			{
+                          				temp = j;
+                          				aux = i;
+                          				click++;
+                          				System.out.println("Ficha Negra Encontrada");
+                          			}//Fin if comparar nombres
+                          		}//fin for buscar fichas
+                          	  }//fin if estado ocupado
+                            }//fin if pos
+            			}//fin for
+            		}//fin if(click)
+            		else if(click > 0)
+            		{
+            			for(int i = 0; i < 16; i++)
+            			{
+            				evt.consume();
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(jugador[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+                          			jugador[temp].setX(estado[i].getX());
+                              		jugador[temp].setY(estado[i].getY());
+                              		jugador[temp].setNombre(estado[i].getNombre());
+                              		estado[i].setOcup(true);
+                              		estado[aux].setOcup(false);
+                              		click = 0;
+                              		cont3LN = 0;
+                              		turno = false;
+                              		repaint();
+                          		}
+                          	  }
+                          	}
+                        }
+            		}
+    			}
+        	}// Fin if(turno)
+        	else if(!turno)
+        	{
+        		if(cont3LB == 0)
+        		{
+        			if(click == 0)
+            		{
+            			evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fcom; j++)
+                          		{
+                          			if(com[j].getNombre().compareTo(estado[i].getNombre()) == 0)
+                          			{
+                          				temp = j;
+                          				click++;
+                          				aux = i;
+                          				System.out.println(com[temp].getNombre());
+                          				System.out.println("Ficha Blanca Encontrada");
+                          			}
+                          		}
+                          	  }
+                            }
+            			}
+            		}
+            		else if(click > 0)
+            		{
+            			evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(com[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+    	                      		com[temp].setX(estado[i].getX());
+    	                      		com[temp].setY(estado[i].getY());
+    	                      		com[temp].setNombre(estado[i].getNombre());
+    	                      		estado[i].setOcup(true);
+    	                      		estado[aux].setOcup(false);
+    	                      		repaint();
+                          		}
+                          	  }
+                    		}
+            			}
+            			if(tresEnLinea(com)) //aqui se va a poner la condicion del 3 en Linea
+                		{ 
+                  			evt.consume();
+                			for(int x = 0; x < 16; x++)
+                			{
+                				System.out.println("Eliminar Negra");
+                	    		if((evt.getX() <= estado[x].getX()+limit && evt.getX() >= estado[x].getX()-limit) && (evt.getY() <= estado[x].getY()+limit && evt.getY() >= estado[x].getY()-limit))
+                	    		{
+                	    			System.out.println("x");
+                	    			if(estado[x].getOcup())
+                	    			{
+                	    				System.out.println("y");
+                	    				for(int y = 0; y < fplayer; y++)
+                	    				{
+                	    					if((jugador[y].getNombre().compareTo(estado[x].getNombre()) == 0) && (jugador[y].getColor() == Color.BLACK))
+                	    					{
+                	    						System.out.println("z");
+                	    						jugador[y].setX(bX[contEN]);
+                	    						jugador[y].setY(bY[contEN++]);
+                	    						jugador[y].setUso(false);
+                	    						estado[x].setOcup(false);
+                	    						disponibleN.setText("" + (fplayer-contEN));
+                	    						click = 0;
+                	    						turno = true;
+                	    						cont3LB++;
+                	    	        			repaint();
+                	    					}
+                	    					System.out.println("y2");//Fin if comparar nombres
+                	    				}//fin for buscar fichas
+                	          	  }
+                	    		}
+                			}
+                		}
+                		else
+                		{
+                			turno = true;
+                			click = 0;
+                			repaint();
+                		}
+            		}//Fin Cont3LB == 0
+            		else
+            		{
+            			if(click == 0)
+                		{
+                			evt.consume();
+                			for(int i = 0; i < 16; i++)
+                			{
+                        		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                        		{
+                              	  if(estado[i].getOcup())
+                              	  {
+                              		for(int j = 0; j < fcom; j++)
+                              		{
+                              			if(com[j].getNombre().compareTo(estado[i].getNombre()) == 0)
+                              			{
+                              				temp = j;
+                              				click++;
+                              				aux = i;
+                              				System.out.println(com[temp].getNombre());
+                              				System.out.println("Ficha Blanca Encontrada");
+                              			}
+                              		}
+                              	  }
+                                }
+                			}
+                		}
+                		else if(click > 0)
+                		{
+                			evt.consume();
+                			for(int i = 0; i < 16; i++)
+                			{
+                        		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                        		{
+                              	  if(!estado[i].getOcup())
+                              	  {
+                              		if(com[temp].movimientoLegal(estado[i].getNombre()))
+                              		{
+        	                      		com[temp].setX(estado[i].getX());
+        	                      		com[temp].setY(estado[i].getY());
+        	                      		com[temp].setNombre(estado[i].getNombre());
+        	                      		estado[i].setOcup(true);
+        	                      		estado[aux].setOcup(false);
+        	                      		turno = true;
+        	                      		cont3LB = 0;
+        	                      		click = 0;
+        	                      		repaint();
+                              		}
+                              	  }
+                        		}
+                			}
+                		}
+            		}
+        		}
+        		else
+        		{
+        			if(click == 0)
+            		{
+    					evt.consume();
+            			for(int i = 0; i < 16; i++)
+            			{
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(estado[i].getOcup())
+                          	  {
+                          		for(int j = 0; j < fcom; j++)
+                          		{
+                          			if(com[j].getNombre().compareTo(estado[i].getNombre()) == 0 && com[j].getColor() == Color.WHITE)
+                          			{
+                          				temp = j;
+                          				aux = i;
+                          				click++;
+                          				System.out.println("Ficha Blanca Encontrada");
+                          			}//Fin if comparar nombres
+                          		}//fin for buscar fichas
+                          	  }//fin if estado ocupado
+                            }//fin if pos
+            			}//fin for
+            		}//fin if(click)
+            		else if(click > 0)
+            		{
+            			for(int i = 0; i < 16; i++)
+            			{
+            				evt.consume();
+                    		if((evt.getX() <= estado[i].getX()+limit && evt.getX() >= estado[i].getX()-limit) && (evt.getY() <= estado[i].getY()+limit && evt.getY() >= estado[i].getY()-limit))
+                    		{
+                          	  if(!estado[i].getOcup())
+                          	  {
+                          		if(com[temp].movimientoLegal(estado[i].getNombre()))
+                          		{
+                          			com[temp].setX(estado[i].getX());
+                              		com[temp].setY(estado[i].getY());
+                              		com[temp].setNombre(estado[i].getNombre());
+                              		estado[i].setOcup(true);
+                              		estado[aux].setOcup(false);
+                              		cont3LB = 0;
+                              		click = 0;
+                              		turno = true;
+                              		repaint();
+                          		}
+                          	  }
+                          	}
+                        }
+            		}
+        		}
+        	}//Fin else(!truno)
+    		if((fplayer - contEN) == 2)
+    		{
+    			JOptionPane.showMessageDialog(null, "FELICIDADES!!! "+ label1.getText() + " has ganado =D!!");
+    			
+    			int confirmado = JOptionPane.showConfirmDialog(null, "¿Lo confirmas?");
+    					if (JOptionPane.OK_OPTION == confirmado)
+    					{
+    						Menu menu = new Menu();
+    						menu.setVisible(true);
+    						this.setVisible(false);
+    					}
+    					else
+    					   System.exit(0);
+    		}
+    		if((fcom - contEB) == 2)
+    		{
+    			JOptionPane.showMessageDialog(null, "FELICIDADES!!! "+ label2.getText() + " has ganado =D!!");
+    			
+    			int confirmado = JOptionPane.showConfirmDialog(null, "¿Lo confirmas?");
+				if (JOptionPane.OK_OPTION == confirmado)
+				{
+					Menu menu = new Menu();
+					menu.setVisible(true);
+					this.setVisible(false);
+				}
+				else
+				   System.exit(0);
+    		}
+  
     	}
-	}
+	}//Fin del metodo
+
+	private boolean tresEnLinea(Ficha x[])
+	{
+		int y[] = new int[6];
+		Query q = new Query("consult('Six Mens Morris.pl')");
+		q.hasSolution();
+		Query q1;
 		
+		for(int i = 0; i < x.length; i++)
+			if(x[i].getUso())
+				y[i] = Integer.parseInt(x[i].getNombre().substring(1));
+		
+		y = insert(y);
+		
+		for(int i = 0; i < x.length; i++)
+		{
+			if(y[i] != 0)
+				if(y[i] == 8)
+				{
+					try{
+						if(y[i-1] == 7 && y[0] == 1)
+							if((new Query("linea(q8,q7,q1)")).hasSolution())
+								return true;
+					}catch (IndexOutOfBoundsException e)
+					{
+						return false;
+					}
+				}
+				else if(y[i] == 9)
+				{
+					try{
+						if(y[i+1] == 10 && y[x.length-1] == 16)
+							if((new Query("linea(q9,q10,q16)")).hasSolution())
+								return true;
+					}catch (IndexOutOfBoundsException e)
+					{
+						return false;
+					}
+				}
+				else if(y[i] > 9)
+				{
+					if((y[i] % 2) == 1)
+						try{
+						if((y[i-1] == (y[i] - 1)) && (y[i+1] == (y[i] + 1)))
+						{
+							if((new Query("linea(q" + y[i] + ",q" + y[i+1] + ",q" + y[i-1] + ")").hasSolution()))
+								return true;
+						}
+						}catch (IndexOutOfBoundsException e)
+						{
+							return false;
+						}
+				}
+				else if (y[i] < 8)
+				{
+					if((y[i] % 2) == 0)
+					try{
+						if((y[i-1] == (y[i] - 1)) && (y[i+1] == (y[i] + 1)))
+						{
+							if((new Query("linea(q" + y[i] + ",q" + y[i+1] + ",q" + y[i-1] + ")").hasSolution()))
+								return true;
+						}
+					}catch (IndexOutOfBoundsException e)
+					{
+						return false;
+					}
+					
+				}
+		}
+		
+		return false;
+	}
+	public static int[] insert(int t[])
+	{
+		int x; int j;
+		for(int i = 0; i < 6; i++)
+		{
+			x = t[i];
+			j = i - 1; 
+			while(j >= 0 && x < t[j])
+			{
+				t[j+1] = t[j];
+				j = j - 1;
+			}
+			
+			t[j+1] = x;
+		}
+		return t;
+	}
+	
 	//Paint
 	private void cuadros(Graphics gg){
 		if (gg instanceof Graphics2D){

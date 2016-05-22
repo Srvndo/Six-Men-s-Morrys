@@ -1,13 +1,14 @@
 package sixMensMorris;
 
 import javax.swing.*;
+import org.jpl7.Query;
 import java.awt.*;
+
 
 public class Ficha extends JComponent {
 	private int x, y;
 	private Color color;
 	private String nombre;
-	private Estado estado;
 	private boolean uso;
 	
 	Ficha(String nombre, int x, int y, Color color){
@@ -15,7 +16,7 @@ public class Ficha extends JComponent {
 		this.x = x;
 		this.y = y;
 		this.color = color;
-		uso = true;
+		uso = false;
 	}
 	
 	public String getNombre(){
@@ -54,6 +55,18 @@ public class Ficha extends JComponent {
 		return color;
 	}
 	
+
+	public boolean movimientoLegal(String s)
+	{
+		Query q = new Query("consult('Six Mens Morris.pl')");
+		q.hasSolution();
+		System.out.println("trans(" + nombre + "," + s + ")");
+		Query q1 = new Query("trans(" + nombre + "," + s + ")");
+		if(q1.hasSolution())
+			return true;
+		else return false;
+	}
+
 	public void paint(Graphics gg){
 		super.paint(gg);
 		if (gg instanceof Graphics2D){

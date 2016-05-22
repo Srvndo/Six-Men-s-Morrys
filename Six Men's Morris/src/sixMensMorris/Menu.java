@@ -10,7 +10,8 @@ public class Menu extends JFrame {
 	private JButton acerca;
 	private JRadioButton pvp, pvc;	
 
-	Menu(){
+	Menu()
+	{
 		
 		super("Menu");
 		this.setSize(600, 500);
@@ -54,26 +55,33 @@ public class Menu extends JFrame {
 		acerca.setFont(new java.awt.Font("Tahoma", 1, 18));
 		acerca.setBounds(220, 400, 140, 50);
 		
-		jugar.addActionListener(new java.awt.event.ActionListener() {
+		jugar.addActionListener(new java.awt.event.ActionListener()
+		{
             public void actionPerformed(java.awt.event.ActionEvent evt) {
             	btnJugar();
             }
         });
 		
-		ayuda.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+		ayuda.addActionListener(new java.awt.event.ActionListener() 
+		{
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
             	btnAyuda();
             }
         });
 		
-		salir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+		salir.addActionListener(new java.awt.event.ActionListener()
+		{
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
             	btnSalir();
             }
         });
 		
-		acerca.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+		acerca.addActionListener(new java.awt.event.ActionListener() 
+		{
+            public void actionPerformed(java.awt.event.ActionEvent evt) 
+            {
             	btnAcerca();
             }
         });
@@ -87,8 +95,10 @@ public class Menu extends JFrame {
 		add(pvc);
 	}
 
-	public void btnJugar(){
-		if(pvp.isSelected()){
+	public void btnJugar()
+	{
+		if(pvp.isSelected())
+		{
 			String j1 = JOptionPane.showInputDialog(null, "Jugador 1", JOptionPane.QUESTION_MESSAGE);
 
 			String j2 = JOptionPane.showInputDialog(null, "Jugador 2", JOptionPane.QUESTION_MESSAGE);
@@ -98,7 +108,8 @@ public class Menu extends JFrame {
 		    this.setVisible(false);
 
 		}
-		else if(pvc.isSelected()){
+		else if(pvc.isSelected())
+		{
 			String j1 = JOptionPane.showInputDialog(null, "Jugador 1", JOptionPane.QUESTION_MESSAGE);
 			
 			Tablero tablero = new Tablero(j1);
@@ -107,7 +118,8 @@ public class Menu extends JFrame {
 		}
 	}
 	
-	public void btnAyuda(){
+	public void btnAyuda()
+	{
 		JOptionPane.showMessageDialog(null, "Instructiones.\nEste es un juego basado en turnos para dos jugadores.\n"
                 + "Un Jugador usa el NEGRO, y el otro el BLANCO. El Objetivo del juego es crear molinos\n"
                 + "de 3 piezas seguidas, hasta reducir la cantidad de fichas del oponente a 2 y ganar.\n\n"
@@ -123,16 +135,19 @@ public class Menu extends JFrame {
 		
 	}
 		
-	public void btnSalir(){
+	public void btnSalir()
+	{
 		System.exit(0);
 	}
 	
-	public void btnAcerca(){
+	public void btnAcerca()
+	{
 		JOptionPane.showMessageDialog(null, "Acerca de: \n                     SIX MEN'S MORRIS\nCreado por: Servando Bermúdez C.I: 23.997.749\n"
 				+ "                      Guillermo Lunar C.I: 24.983.503\n\n          Lenguajes de Programación\n            Prof. Aquiles Barreto, PhD.");
 	}
 	
-	public static void main(String[] arg) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException{
+	public static void main(String[] arg) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	{
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		Menu menu = new Menu();
 		menu.setVisible(true);
